@@ -5,12 +5,9 @@ import hellfirepvp.observerlib.client.ClientProxy;
 import hellfirepvp.observerlib.common.CommonProxy;
 import hellfirepvp.observerlib.common.api.MatcherObserverHelper;
 import hellfirepvp.observerlib.common.util.DistUtil;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +18,6 @@ import org.apache.logging.log4j.Logger;
  * Created by HellFirePvP
  * Date: 06.03.2019 / 21:18
  */
-@Mod(ObserverLib.MODID)
 public class ObserverLib {
 
     public static final String MODID = "observerlib";
@@ -33,14 +29,18 @@ public class ObserverLib {
     private final ModContainer modContainer;
     private final CommonProxy proxy;
 
-    public ObserverLib(IEventBus modLoadingBus) {
+    public static void init(){
+        new ObserverLib();
+    }
+
+    private ObserverLib() {
         instance = this;
-        this.modContainer = ModList.get().getModContainerById(MODID).get();
+        this.modContainer = FabricLoader.getInstance().getModContainer(MODID).orElseThrow();
 
         this.proxy = DistUtil.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
         this.proxy.initialize();
-        this.proxy.attachLifecycle(modLoadingBus);
-        this.proxy.attachEventHandlers(NeoForge.EVENT_BUS);
+        this.proxy.attachLifecycle();
+        this.proxy.attachEventHandlers();
 
         ObserverHelper.setHelper(new MatcherObserverHelper());
     }

@@ -1,11 +1,11 @@
 package hellfirepvp.observerlib.api.tile;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockGetter;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,27 +25,26 @@ public interface MatchableTile<T extends BlockEntity> {
      *
      * @param tile the created client tileentity
      * @param tick an ongoing client tick to cycle through things or related
-     * @param tag the tag read onto the tileentity before rendering
+     * @param tag  the tag read onto the tileentity before rendering
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void writeDisplayData(@Nonnull T tile, long tick, @Nonnull CompoundTag tag);
 
     /**
      * Write data onto the tileentity after it was placed into the world.
      *
-     * @param tile the placed tile entity
+     * @param tile  the placed tile entity
      * @param world the world it was placed in
-     * @param pos the position it was placed at
+     * @param pos   the position it was placed at
      */
     public void postPlacement(@Nonnull T tile, @Nonnull BlockGetter world, BlockPos pos);
 
     /**
      * Tests if this matcher considers the passed tileentity valid for the world & blockpos combination
      *
-     * @param reader the world to test in, may be null
+     * @param reader           the world to test in, may be null
      * @param absolutePosition the position the tileentity is at in the world
-     * @param tile the tileentity to test
-     *
+     * @param tile             the tileentity to test
      * @return true, if the tileentity is valid, false otherwise
      */
     public boolean matches(@Nullable BlockGetter reader, @Nonnull BlockPos absolutePosition, @Nonnull T tile);

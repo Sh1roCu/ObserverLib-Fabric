@@ -1,13 +1,12 @@
 package hellfirepvp.observerlib.api;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 /**
  * This class is part of the ObserverLib Mod
@@ -24,10 +23,10 @@ public abstract class ObserverHelper {
     /**
      * A air-like block that is solely used for display in structure previews to inform the player
      * about certain parts of the structure that MUST be air-like.
-     *
+     * <p>
      * Does not have a corresponding BlockItem and tries to remove itself when placed in world.
      */
-    public static DeferredBlock<Block> blockAirRequirement;
+    public static Supplier<Block> blockAirRequirement;
 
     /**
      * Retrieve the current API instance using this getter.
@@ -46,17 +45,16 @@ public abstract class ObserverHelper {
     /**
      * Start watching changes in the world using a specific observer provider.
      * Offset by the specified center position.
-     *
+     * <p>
      * Will remove an existing subscriber if there is already one at that world + position combination that is NOT
      * the same type of observer (determined by registry-name) trying to be set there.
      *
-     * @param world the world watching in
-     * @param center the offset the observer should watch at
+     * @param world    the world watching in
+     * @param center   the offset the observer should watch at
      * @param provider the provider providing a new observer instance for the observation
-     * @param <T> the type of observer the provider is expected to return for generic usage
-     *
+     * @param <T>      the type of observer the provider is expected to return for generic usage
      * @return a new subscriber watching the specified area OR the existing subscriber if one at the specified
-     *      offset already exists in that world at that position
+     * offset already exists in that world at that position
      */
     @Nonnull
     public abstract <T extends ChangeObserver<T>> ChangeSubscriber<T> observeArea(Level world, BlockPos center, ObserverProvider<T> provider);
@@ -65,8 +63,7 @@ public abstract class ObserverHelper {
      * Removes an observer at the given world + position combination.
      *
      * @param world the world to remove the observer from
-     * @param pos the position the observer is expected to be at
-     *
+     * @param pos   the position the observer is expected to be at
      * @return true, if there was a observer at the world + position combination and it could be removed, false otherwise
      */
     public abstract boolean removeObserver(Level world, BlockPos pos);
@@ -75,8 +72,7 @@ public abstract class ObserverHelper {
      * Returns the current observation subscriber at the given world + position if there is one.
      *
      * @param world the world to retrieve the observation subscriber from
-     * @param pos the position to check at
-     *
+     * @param pos   the position to check at
      * @return the observation subscriber at that position or null if none is found there
      */
     @Nullable

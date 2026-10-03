@@ -1,16 +1,15 @@
 package hellfirepvp.observerlib.common.util;
 
+import cn.sh1rocu.observerlib.ObserverLibFabric;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.Registry;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,8 +32,8 @@ public class RegistryLookup {
         this.registries = registries;
     }
 
-    public static RegistryLookup side(@Nonnull LogicalSide side) {
-        if (side.isServer()) {
+    public static RegistryLookup side(@Nonnull EnvType side) {
+        if (side == EnvType.SERVER) {
             return server();
         } else {
             return client();
@@ -42,14 +41,14 @@ public class RegistryLookup {
     }
 
     public static RegistryLookup server() {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        MinecraftServer server = ObserverLibFabric.getServer();
         if (server == null) {
             return new RegistryLookup(builtInAccess());
         }
         return new RegistryLookup(server.registryAccess());
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static RegistryLookup client() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.getConnection() == null) {

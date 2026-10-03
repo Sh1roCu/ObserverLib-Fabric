@@ -2,8 +2,7 @@ package hellfirepvp.observerlib.common.event.handler;
 
 import hellfirepvp.observerlib.common.data.WorldCacheManager;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.event.level.LevelEvent;
+import net.minecraft.world.level.LevelAccessor;
 
 /**
  * This class is part of the ObserverLib Mod
@@ -14,15 +13,11 @@ import net.neoforged.neoforge.event.level.LevelEvent;
  */
 public class EventHandlerIO {
 
-    public static void init(IEventBus eventBus) {
-        eventBus.addListener(EventHandlerIO::onSave);
-    }
-
-    private static void onSave(LevelEvent.Save event) {
-        if (event.getLevel().isClientSide() || !(event.getLevel() instanceof Level)) {
+    public static void onSave(LevelAccessor level) {
+        if (level.isClientSide() || !(level instanceof Level)) {
             return;
         }
-        WorldCacheManager.getInstance().doSave((Level) event.getLevel());
+        WorldCacheManager.getInstance().doSave((Level) level);
     }
 
 }

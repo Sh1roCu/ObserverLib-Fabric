@@ -7,13 +7,11 @@ import hellfirepvp.observerlib.common.change.StructureIntegrityObserver;
 import hellfirepvp.observerlib.common.data.WorldCacheIOThread;
 import hellfirepvp.observerlib.common.data.WorldCacheManager;
 import hellfirepvp.observerlib.common.event.BlockChangeNotifier;
-import hellfirepvp.observerlib.common.event.handler.EventHandlerIO;
 import hellfirepvp.observerlib.common.registry.RegistryProviders;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.MinecraftServer;
 
 /**
  * This class is part of the ObserverLib Mod
@@ -24,38 +22,34 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
  */
 public class CommonProxy {
 
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(ObserverLib.MODID);
-
     public void initialize() {
         BlockChangeNotifier.addListener(new StructureIntegrityObserver());
     }
 
-    public void attachLifecycle(IEventBus modEventBus) {
-        this.registerBlocks(modEventBus);
-        modEventBus.addListener(this::registerRegistries);
+    public void attachLifecycle() {
+        this.registerBlocks();
+        this.registerRegistries();
     }
 
-    private void registerBlocks(IEventBus modEventBus) {
-        ObserverHelper.blockAirRequirement = BLOCKS.register("air_preview", BlockAirRequirement::new);
-        BLOCKS.register(modEventBus);
+    private void registerBlocks() {
+        ObserverHelper.blockAirRequirement = () -> Registry.register(BuiltInRegistries.BLOCK,
+                ObserverLib.key("air_preview"), new BlockAirRequirement());
     }
 
-    private void registerRegistries(NewRegistryEvent event) {
-        RegistryProviders.initialize(event);
+    private void registerRegistries() {
+        RegistryProviders.initialize();
     }
 
-    public void attachEventHandlers(IEventBus eventBus) {
-        eventBus.addListener(this::onServerStarted);
-        eventBus.addListener(this::onServerStopping);
-
-        EventHandlerIO.init(eventBus);
+    public void attachEventHandlers() {
+        ServerLifecycleEvents.SERVER_STARTED.register(this::onServerStarted);
+        ServerLifecycleEvents.SERVER_STOPPING.register(this::onServerStopping);
     }
 
-    private void onServerStarted(ServerStartedEvent event) {
+    private void onServerStarted(MinecraftServer server) {
         WorldCacheIOThread.onServerStart();
     }
 
-    private void onServerStopping(ServerStoppingEvent event) {
+    private void onServerStopping(MinecraftServer server) {
         WorldCacheManager.scheduleSaveAll();
         WorldCacheIOThread.onServerStop();
         WorldCacheManager.cleanUp();

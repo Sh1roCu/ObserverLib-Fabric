@@ -1,7 +1,7 @@
 package hellfirepvp.observerlib.client.util;
 
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.Minecraft;
 
 /**
  * This class is part of the ObserverLib Mod
@@ -16,17 +16,18 @@ public class ClientTickHelper {
 
     private static long tick = 0;
 
-    private ClientTickHelper() {}
+    private ClientTickHelper() {
+    }
 
-    public void attachEventListener(IEventBus eventBus) {
-        eventBus.addListener(this::tick);
+    public void attachEventListener() {
+        ClientTickEvents.END_CLIENT_TICK.register(this::tick);
     }
 
     public static long getClientTick() {
         return tick;
     }
 
-    private void tick(ClientTickEvent.Post event) {
+    private void tick(Minecraft client) {
         tick++;
     }
 }

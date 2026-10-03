@@ -1,14 +1,14 @@
 package hellfirepvp.observerlib.common.data;
 
+import cn.sh1rocu.observerlib.ObserverLibFabric;
+import cn.sh1rocu.observerlib.mixin.accessor.LevelResourceAccessor;
 import com.google.common.io.Files;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import hellfirepvp.observerlib.ObserverLib;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.LevelResource;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -92,11 +92,11 @@ public class WorldCacheDomain {
     }
 
     public File getSaveDirectory() {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        MinecraftServer server = ObserverLibFabric.getServer();
         if (server == null) {
             return null;
         }
-        File dataDir = server.getWorldPath(new LevelResource(key.getNamespace())).toFile();
+        File dataDir = server.getWorldPath(LevelResourceAccessor.ol$create(key.getNamespace())).toFile();
         if (!dataDir.exists()) {
             dataDir.mkdirs();
         }

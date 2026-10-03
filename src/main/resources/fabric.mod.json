@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "observerlib",
+  "version": "${version}",
+  "name": "ObserverLib",
+  "description": "ObserverLib Unofficial Fabric port",
+  "authors": [
+    "Sh1roCu",
+    "HellFirePvP"
+  ],
+  "contact": {},
+  "license": "LGPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "cn.sh1rocu.observerlib.client.ObserverLibFabricClient"
+    ],
+    "main": [
+      "cn.sh1rocu.observerlib.ObserverLibFabric"
+    ]
+  },
+  "mixins": [
+    "observerlib.mixins.json",
+    "observerlib.fabric.mixins.json"
+  ],
+  "accessWidener": "observerlib.accesswidener",
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

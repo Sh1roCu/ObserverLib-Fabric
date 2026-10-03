@@ -2,11 +2,11 @@ package hellfirepvp.observerlib.common.registry;
 
 import hellfirepvp.observerlib.ObserverLib;
 import hellfirepvp.observerlib.api.ObserverProvider;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
-import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,10 +21,11 @@ import javax.annotation.Nullable;
 public class RegistryProviders {
 
     public static final ResourceKey<Registry<ObserverProvider<?>>> REGISTRY_KEY = ResourceKey.createRegistryKey(ObserverLib.key("observer_providers"));
-    private static final Registry<ObserverProvider<?>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).sync(true).create();
+    private static final Registry<ObserverProvider<?>> REGISTRY = FabricRegistryBuilder.createSimple(REGISTRY_KEY)
+            .attribute(RegistryAttribute.SYNCED).buildAndRegister();
 
-    public static void initialize(NewRegistryEvent event) {
-        event.register(REGISTRY);
+    public static void initialize() {
+
     }
 
     @Nullable
